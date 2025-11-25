@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+@theme {
+  /* Modern, Feminine Color Palette */
+  --color-primary: #FF6B9D;           /* Hot pink - vibrant & fun */
+  --color-secondary: #C77DFF;         /* Purple - creative & trendy */
+  --color-accent: #FFD60A;            /* Bright yellow - energetic */
+  --color-background: #FFF8FC;        /* Soft blush white */
+  --color-surface: #FFFFFF;           /* Pure white cards */
+  --color-gradient-1: #FF6B9D;        /* Gradient start */
+  --color-gradient-2: #C77DFF;        /* Gradient end */
+  --color-text-primary: #2D1B3D;      /* Deep purple-black */
+  --color-text-secondary: #8B7BA8;    /* Soft purple-gray */
+  --color-border: #F0E5FF;            /* Light purple tint */
+  --color-success: #4CAF50;           /* Fresh green */
+  --color-hover: #FF8DB5;             /* Lighter pink for hover */
+
+  --font-family-heading: 'Poppins', 'Plus Jakarta Sans', sans-serif;
+  --font-family-body: 'Inter', 'DM Sans', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  --radius-card: 24px;
+  --radius-button: 16px;
+  --radius-input: 12px;
+
+  --shadow-sm: 0 2px 8px rgba(255, 107, 157, 0.1);
+  --shadow-md: 0 4px 16px rgba(199, 125, 255, 0.15);
+  --shadow-lg: 0 8px 32px rgba(255, 107, 157, 0.2);
+}
+
+body {
+  background: linear-gradient(135deg, #FFF8FC 0%, #F5F0FF 100%);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Gradient text for headings */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Modern button styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-button);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-hover) 0%, var(--color-secondary) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--color-primary);
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-button);
+  font-weight: 600;
+  border: 2px solid var(--color-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(199, 125, 255, 0.05) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Modern card styles */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+/* Input fields with modern look */
+.input-field {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--radius-input);
+  border: 2px solid var(--color-border);
+  background-color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.95rem;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
+  transform: translateY(-1px);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* Custom scrollbar - modern & cute */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  border-radius: 10px;
+  border: 2px solid var(--color-background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-hover) 0%, var(--color-secondary) 100%);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(199, 125, 255, 0.5); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.2), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Badge styles */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tooltip style */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 1rem;
+  background: var(--color-text-primary);
+  color: white;
+  border-radius: var(--radius-input);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Fashion App Upload</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 800px; margin: 0 auto; }
+        #drop-zone { border: 2px dashed #ccc; padding: 50px; text-align: center; margin: 20px 0; }
+        #drop-zone.drag-over { border-color: #000; background: #f0f0f0; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; background: #f5f5f5; white-space: pre-wrap; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Test Fashion Designer Studio - Upload & Analyze</h1>
+
+    <div id="drop-zone">
+        <p>Drop an image here or click to select</p>
+        <input type="file" id="file-input" accept="image/*" style="display:none">
+    </div>
+
+    <button onclick="testAnalyze()">Test Analyze with Uploaded Image</button>
+    <button onclick="testGenerate()">Test Image Generation</button>
+
+    <div id="result"></div>
+
+    <script>
+        let uploadedImage = null;
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const resultDiv = document.getElementById('result');
+
+        dropZone.onclick = () => fileInput.click();
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                resultDiv.innerHTML = '<p class="error">Please select an image file</p>';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result.split(',')[1];
+                uploadedImage = {
+                    data: base64,
+                    type: file.type
+                };
+                resultDiv.innerHTML = '<p class="success">✓ Image loaded! Size: ' + file.size + ' bytes</p>';
+                console.log('Image loaded:', uploadedImage.type, 'Base64 length:', uploadedImage.data.length);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function testAnalyze() {
+            if (!uploadedImage) {
+                resultDiv.innerHTML = '<p class="error">Please upload an image first</p>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>Testing analyze-sketch function...</p>';
+
+            try {
+                const response = await fetch('/.netlify/functions/analyze-sketch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        images: [uploadedImage],
+                        conversationHistory: [],
+                        userMessage: "What do you see in this sketch?",
+                        analysisType: "sketch"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">✓ SUCCESS!</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    resultDiv.innerHTML = '<p class="error">✗ ERROR: ' + response.status + '</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">✗ NETWORK ERROR: ' + error.message + '</p>';
+            }
+        }
+
+        async function testGenerate() {
+            resultDiv.innerHTML = '<p>Testing generate-design function (this takes 15-20 seconds)...</p>';
+
+            try {
+                const response = await fetch('/.netlify/functions/generate-design', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: "A beautiful elegant summer dress with floral patterns, professional fashion photography",
+                        size: "1024x1024",
+                        style: "natural"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">✓ SUCCESS! Image generated</p>';
+                    if (data.images && data.images[0]) {
+                        const img = document.createElement('img');
+                        img.src = data.images[0].url;
+                        img.style.maxWidth = '100%';
+                        resultDiv.appendChild(img);
+                    }
+                } else {
+                    resultDiv.innerHTML = '<p class="error">✗ ERROR: ' + response.status + '</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p class="error">✗ NETWORK ERROR: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
